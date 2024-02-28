@@ -2,4 +2,21 @@
     margin: 0;
     box-sizing: border-box;
     font-family: "Roboto";
+
+}
+
+
+#header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 15px 0;
+}
+
+#picture-container {
+    width: 100%;
+
+    #gamePicture {
+        width: 100vw;
+    }
 }
