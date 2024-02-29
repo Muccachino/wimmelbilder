@@ -1,89 +1,133 @@
 import { useEffect, useRef, useState, MouseEvent } from "react";
 import usePictures from "./usePictures";
-
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 
 export default function Game() {
-
-  const [picture] = usePictures();
+  const [picture, coordinates] = usePictures();
   const [counter, setCounter] = useState(0);
-  const imageContainerRef = useRef<HTMLDivElement | null>(null)
-
-  const testCoords = {
-    image1: {
-      coordX: 200,
-      coordY: 200
-    },
-    image2: {
-      coordX: 400,
-      coordY: 400
-    },
-    image3: {
-      coordX: 600,
-      coordY: 600
-    }
-  }
+  const [imagesFound, setImagesFound] = useState({
+    image1: false,
+    image2: false,
+    image3: false,
+  });
+  const imageContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCounter(prevCounter => prevCounter + 1);
-    }, 1000)
+      setCounter((prevCounter) => prevCounter + 1);
+    }, 1000);
 
     return () => clearInterval(interval);
-  })
+  });
 
   const handleClick = (event: MouseEvent<HTMLImageElement>) => {
-
     const container = imageContainerRef.current;
     if (!container) return;
-  
-    const baseWidth = 1905;
-    const baseHeight = 1545;
-  
-    const containerWidth = container.offsetWidth;
-    const containerHeight = container.offsetHeight;
-  
-/*     const mouseXPercentage = (event.clientX - container.offsetLeft) / containerWidth * 100;
-    const mouseYPercentage = (event.clientY - container.offsetTop) / containerHeight * 100; */
-  
-    const widthChangePercentage = (containerWidth / baseWidth - 1) * 100;
-    const heightChangePercentage = (containerHeight / baseHeight - 1) * 100;
-    const modifierX = Math.abs(widthChangePercentage / 100);
-    const modifierY = Math.abs(heightChangePercentage / 100);
-    let xCoord, yCoord
+    const containerBounds = container.getBoundingClientRect();
+    const relativeMouseX =
+      Math.round(
+        ((event.clientX - containerBounds.left) / containerBounds.width) *
+          100 *
+          100
+      ) / 100;
+    const relativeMouseY =
+      Math.round(
+        ((event.clientY - containerBounds.top) / containerBounds.height) *
+          100 *
+          100
+      ) / 100;
 
-    if (widthChangePercentage >= 0) {
-      xCoord = event.clientX + (event.clientX * modifierX)
-      yCoord = event.clientY + (event.clientY * modifierY)
-    } else {
-      xCoord = event.clientX - (event.clientX * modifierX)
-      yCoord = event.clientY - (event.clientY * modifierY)
+    console.log(
+      `Relative Mausposition im Container: x=${relativeMouseX}, y=${relativeMouseY}`
+    );
+
+    if (
+      relativeMouseX > coordinates.image1.coordX - 3 &&
+      relativeMouseX < coordinates.image1.coordX + 3 &&
+      relativeMouseY > coordinates.image1.coordY - 3 &&
+      relativeMouseY < coordinates.image1.coordY + 3
+    ) {
+      console.log("Event!!!");
+      setImagesFound((prev) => ({
+        ...prev,
+        image1: true,
+      }));
     }
 
-  
-    console.log('Prozentuale Mausklick-Koordinaten:', { x: xCoord, y: yCoord });
-    console.log('Breitenänderung in Prozent:', widthChangePercentage);
-    console.log('Höhenänderung in Prozent:', heightChangePercentage);
-    console.log("modifierX: " + modifierX, "modifierY: " + modifierY)
-/* 
-    const mouseX = event.pageX;
-    const mouseY = event.pageY + 130;
+    if (
+      relativeMouseX > coordinates.image2.coordX - 3 &&
+      relativeMouseX < coordinates.image2.coordX + 3 &&
+      relativeMouseY > coordinates.image2.coordY - 3 &&
+      relativeMouseY < coordinates.image2.coordY + 3
+    ) {
+      console.log("Event!!!");
+      setImagesFound((prev) => ({
+        ...prev,
+        image2: true,
+      }));
+    }
+    if (
+      relativeMouseX > coordinates.image3.coordX - 3 &&
+      relativeMouseX < coordinates.image3.coordX + 3 &&
+      relativeMouseY > coordinates.image3.coordY - 3 &&
+      relativeMouseY < coordinates.image3.coordY + 3
+    ) {
+      console.log("Event!!!");
+      setImagesFound((prev) => ({
+        ...prev,
+        image3: true,
+      }));
+    }
+  };
 
-    console.log("X:" + mouseX, "Y:" + mouseY)
-
-    if ((mouseX > (testCoords.image1.coordX - 30) && mouseX < (testCoords.image1.coordX + 30) && mouseY > (testCoords.image1.coordY - 30) && mouseY < (testCoords.image1.coordY + 30)) || 
-        (mouseX > (testCoords.image2.coordX - 30) && mouseX < (testCoords.image2.coordX + 30) && mouseY > (testCoords.image2.coordY - 30) && mouseY < (testCoords.image2.coordY + 30)) ||
-        (mouseX > (testCoords.image3.coordX - 30) && mouseX < (testCoords.image3.coordX + 30) && mouseY > (testCoords.image3.coordY - 30) && mouseY < (testCoords.image3.coordY + 30))) {
-      console.log("Event!!!")
-    } */
-  }
-
-
-  return(
+  return (
     <>
       <header id="header">
-        <img src={picture?.searchImages.sImage1} height={100}/>
-        <img src={picture?.searchImages.sImage2} height={100}/>
-        <img src={picture?.searchImages.sImage3} height={100}/>
+        {!imagesFound.image1 ? (
+          <img src={picture?.searchImages.sImage1} height={100} width={150} />
+        ) : (
+          <div
+            style={{
+              width: 150,
+              height: 100,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <CheckCircleOutlineOutlinedIcon fontSize="large" />
+          </div>
+        )}
+        {!imagesFound.image2 ? (
+          <img src={picture?.searchImages.sImage2} height={100} width={150} />
+        ) : (
+          <div
+            style={{
+              width: 150,
+              height: 100,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <CheckCircleOutlineOutlinedIcon fontSize="large" />
+          </div>
+        )}
+        {!imagesFound.image3 ? (
+          <img src={picture?.searchImages.sImage3} height={100} width={150} />
+        ) : (
+          <div
+            style={{
+              width: 150,
+              height: 100,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <CheckCircleOutlineOutlinedIcon fontSize="large" />
+          </div>
+        )}
 
         <div>
           <p>{counter}</p>
@@ -91,8 +135,12 @@ export default function Game() {
       </header>
 
       <div ref={imageContainerRef} id="picture-container">
-        <img id="gamePicture" src={picture?.pictureURL} onClick={(e) => handleClick(e)} />
-      </div>    
+        <img
+          id="gamePicture"
+          src={picture?.pictureURL}
+          onClick={(e) => handleClick(e)}
+        />
+      </div>
     </>
-  )
+  );
 }

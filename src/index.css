@@ -1,22 +1,26 @@
 * {
-    margin: 0;
-    box-sizing: border-box;
-    font-family: "Roboto";
-
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Roboto";
 }
 
-
 #header {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 15px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 15px 0;
+  background-color: white;
 }
 
 #picture-container {
-    width: 100%;
+  width: 100%;
+  margin-top: 130px;
 
-    #gamePicture {
-        width: 100vw;
-    }
+  #gamePicture {
+    width: 100vw;
+  }
 }

@@ -12,15 +12,14 @@ const firebaseConfig = {
   projectId: "wimmelbilder-77dc8",
   storageBucket: "wimmelbilder-77dc8.appspot.com",
   messagingSenderId: "207189737986",
-  appId: "1:207189737986:web:1496ba82bc30152ae05d1b"
+  appId: "1:207189737986:web:1496ba82bc30152ae05d1b",
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 
-// Init Highscore Database
-export const highscoreDB = getFirestore(app);
+// Init Database
+export const db = getFirestore(app);
 
 //Init Picture Storage
 export const storage = getStorage(app);
-
