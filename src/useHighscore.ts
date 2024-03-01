@@ -32,6 +32,7 @@ export default function useHighscore() {
   }, []);
 
   const addHighscore = async (player: Highscore) => {
+    console.log(player);
     const docRef = collection(db, "highscore");
     await addDoc(docRef, player);
   };

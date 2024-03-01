@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState, MouseEvent } from "react";
 import usePictures from "./usePictures";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import usePlayer from "./usePlayer";
+import useHighscore, { Highscore } from "./useHighscore";
+import HighscoreTable from "./HighscoreTable";
 
-interface Props {
-  gameWon: (
-    imagesFound: { image1: boolean; image2: boolean; image3: boolean },
-    time: number
-  ) => void;
-}
-
-export default function Game({ gameWon }: Props) {
+export default function Game() {
   const [picture, coordinates] = usePictures();
+  const [player, , addPlayerTime] = usePlayer();
+  const [, addHighscore] = useHighscore();
   const [counter, setCounter] = useState(0);
+  const [openHighscore, setOpenHighscore] = useState(false);
   const [imagesFound, setImagesFound] = useState({
     image1: false,
     image2: false,
@@ -22,12 +21,25 @@ export default function Game({ gameWon }: Props) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCounter((prevCounter) => prevCounter + 1);
+      (addPlayerTime as (newTime: number) => void)(counter);
     }, 1000);
 
     return () => clearInterval(interval);
   });
 
-  const handleClick = (event: MouseEvent<HTMLImageElement>) => {
+  useEffect(() => {
+    const checkWin = () => {
+      if (imagesFound.image1 && imagesFound.image2 && imagesFound.image3) {
+        (addHighscore as (player: Highscore) => Promise<void>)(
+          player as Highscore
+        );
+        setOpenHighscore(true);
+      }
+    };
+    checkWin();
+  }, [imagesFound]);
+
+  const handleClick = async (event: MouseEvent<HTMLImageElement>) => {
     const container = imageContainerRef.current;
     if (!container) return;
     const containerBounds = container.getBoundingClientRect();
@@ -156,10 +168,11 @@ export default function Game({ gameWon }: Props) {
           src={picture?.pictureURL}
           onClick={(e) => {
             handleClick(e);
-            gameWon(imagesFound, counter);
           }}
         />
       </div>
+
+      <HighscoreTable open={openHighscore} />
     </>
   );
 }

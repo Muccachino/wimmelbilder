@@ -1,11 +1,17 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import { useState } from "react";
+import usePlayer from "./usePlayer";
 
-interface Props {
-  setName: (name: string) => void;
-}
-
-export default function NameForm({setName}: Props) {
+export default function NameForm() {
+  const [, addPlayerName] = usePlayer();
   const [open, setOpen] = useState(true);
   const [formData, setFormData] = useState("");
 
@@ -13,20 +19,29 @@ export default function NameForm({setName}: Props) {
     <Dialog open={open}>
       <DialogTitle>Player Name</DialogTitle>
       <DialogContent>
-        <DialogContentText>Enter a player name for the highscore</DialogContentText>
+        <DialogContentText>
+          Enter a player name for the highscore
+        </DialogContentText>
         <TextField
           variant="outlined"
           id="name-input"
           label="Player Name"
           type="text"
-          onChange={(e) => setFormData(e.target.value)}/>
+          value={formData}
+          onChange={(e) => setFormData(e.target.value)}
+        />
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" onClick={() => {setOpen(false); setName(formData)}}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setOpen(false);
+            (addPlayerName as (newName: string) => void)(formData);
+          }}
+        >
           Start Game
         </Button>
       </DialogActions>
     </Dialog>
-      
-  )
+  );
 }
