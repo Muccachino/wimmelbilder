@@ -2,7 +2,14 @@ import { useEffect, useRef, useState, MouseEvent } from "react";
 import usePictures from "./usePictures";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 
-export default function Game() {
+interface Props {
+  gameWon: (
+    imagesFound: { image1: boolean; image2: boolean; image3: boolean },
+    time: number
+  ) => void;
+}
+
+export default function Game({ gameWon }: Props) {
   const [picture, coordinates] = usePictures();
   const [counter, setCounter] = useState(0);
   const [imagesFound, setImagesFound] = useState({
@@ -95,7 +102,10 @@ export default function Game() {
               alignItems: "center",
             }}
           >
-            <CheckCircleOutlineOutlinedIcon fontSize="large" />
+            <CheckCircleOutlineOutlinedIcon
+              fontSize="large"
+              sx={{ color: "green" }}
+            />
           </div>
         )}
         {!imagesFound.image2 ? (
@@ -110,7 +120,10 @@ export default function Game() {
               alignItems: "center",
             }}
           >
-            <CheckCircleOutlineOutlinedIcon fontSize="large" />
+            <CheckCircleOutlineOutlinedIcon
+              fontSize="large"
+              sx={{ color: "green" }}
+            />
           </div>
         )}
         {!imagesFound.image3 ? (
@@ -125,7 +138,10 @@ export default function Game() {
               alignItems: "center",
             }}
           >
-            <CheckCircleOutlineOutlinedIcon fontSize="large" />
+            <CheckCircleOutlineOutlinedIcon
+              fontSize="large"
+              sx={{ color: "green" }}
+            />
           </div>
         )}
 
@@ -138,7 +154,10 @@ export default function Game() {
         <img
           id="gamePicture"
           src={picture?.pictureURL}
-          onClick={(e) => handleClick(e)}
+          onClick={(e) => {
+            handleClick(e);
+            gameWon(imagesFound, counter);
+          }}
         />
       </div>
     </>
