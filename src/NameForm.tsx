@@ -10,8 +10,12 @@ import {
 import { useState } from "react";
 import usePlayer from "./usePlayer";
 
-export default function NameForm() {
-  const [, addPlayerName] = usePlayer();
+type Props = {
+  addPlayer: (newName: string) => void;
+};
+
+export default function NameForm({ addPlayer }: Props) {
+  // const [player, addPlayerName] = usePlayer();
   const [open, setOpen] = useState(true);
   const [formData, setFormData] = useState("");
 
@@ -35,8 +39,9 @@ export default function NameForm() {
         <Button
           variant="contained"
           onClick={() => {
+            console.log(formData);
             setOpen(false);
-            (addPlayerName as (newName: string) => void)(formData);
+            (addPlayer as (newName: string) => void)(formData);
           }}
         >
           Start Game

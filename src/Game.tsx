@@ -5,9 +5,14 @@ import usePlayer from "./usePlayer";
 import useHighscore, { Highscore } from "./useHighscore";
 import HighscoreTable from "./HighscoreTable";
 
-export default function Game() {
+type Props = {
+  player: Highscore;
+  addTime: (newTime: number) => void;
+};
+
+export default function Game({ addTime, player }: Props) {
   const [picture, coordinates] = usePictures();
-  const [player, , addPlayerTime] = usePlayer();
+  //const [player, , addPlayerTime] = usePlayer();
   const [, addHighscore] = useHighscore();
   const [counter, setCounter] = useState(0);
   const [openHighscore, setOpenHighscore] = useState(false);
@@ -21,11 +26,11 @@ export default function Game() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCounter((prevCounter) => prevCounter + 1);
-      (addPlayerTime as (newTime: number) => void)(counter);
+      (addTime as (newTime: number) => void)(counter);
     }, 1000);
 
     return () => clearInterval(interval);
-  });
+  }, [addTime]);
 
   useEffect(() => {
     const checkWin = () => {
@@ -37,7 +42,7 @@ export default function Game() {
       }
     };
     checkWin();
-  }, [imagesFound]);
+  }, [imagesFound, player, addHighscore]);
 
   const handleClick = async (event: MouseEvent<HTMLImageElement>) => {
     const container = imageContainerRef.current;
