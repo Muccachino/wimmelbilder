@@ -9,7 +9,6 @@ export default function usePlayer() {
   });
 
   const addPlayerName = (newName: string) => {
-    console.log(newName);
     setPlayer({ ...player, name: newName });
   };
 
